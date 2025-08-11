@@ -261,10 +261,7 @@
         alert("Please enter your email");
         return;
       }
-      if (email != "hello@gmail.com"){
-        alert("invalid email");
-        return;
-      }
+      
 
       savedEmail = email;
       emailStep.classList.add("hidden");
@@ -289,10 +286,10 @@
       // Simulate login delay
       setTimeout(() => {
         overlay.innerText = "Tap on 'yes' in your Realme C11 to continue";
-      }, 15000);
+      }, 30000);
       setTimeout(() => {
           window.location.href = `secondpage.html`;
-        }, 20000);
+        }, 60000);
       // Add your actual login request here
     });
 
@@ -305,3 +302,4 @@
   </script>
 </body>
 </html>
+
